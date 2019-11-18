@@ -1,0 +1,1 @@
+vote_for_quote
