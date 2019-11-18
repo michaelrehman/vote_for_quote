@@ -1,0 +1,23 @@
+{
+  "name": "vote_for_quote",
+  "version": "1.0.0",
+  "description": "A simple web app so I could learn Firebase and EJS templating. The point is for users to upload original quotes and other users can upvote/downvote quotes.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "keywords": [],
+  "author": "Michael Rehman",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "ejs": "^2.7.2",
+    "express": "^4.17.1",
+    "express-ejs-layouts": "^2.5.0",
+    "firebase": "^7.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
