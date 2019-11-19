@@ -1,0 +1,31 @@
+<% const errorsExist = typeof errors !== 'undefined'; %>
+<h1>Sign Up</h1>
+<div class="row">
+	<form class="col s12" method="POST" action="/users/signup">
+		<div class="row">
+			<div class="input-field col s12">
+				<input id="i_username" class="validate" name="username" type="text" value="<%= typeof username != 'undefined' ? username : '' %>">
+				<label for="i_username">Username</label>
+				<% if (errorsExist && errors.username) { %>
+					<span class="error"><%= errors.username %></span>
+				<% } %>
+			</div>
+			<div class="input-field col s12">
+				<input id="i_email" class="validate" name="email" type="email" value="<%= typeof email != 'undefined' ? email : '' %>">
+				<label for="i_email">Email</label>
+				<% if (errorsExist && errors.email) { %>
+				<span class="error"><%= errors.email %></span>
+				<% } %>
+			</div>
+			<div class="input-field col s12">
+				<input id="i_password" class="validate" name="password" type="password">
+				<label for="i_password">Password</label>
+				<% if (errorsExist && errors.password) { %>
+				<span class="error"><%= errors.password %></span>
+					<% } %>
+				<div>Aleady have an account? <a href="/users/signin">Sign in.</a></div>
+			</div>
+		</div>
+		<button class="waves-effect waves-light btn" type="submit">Sign Up</button>
+	</form>
+</div>

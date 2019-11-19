@@ -1,0 +1,15 @@
+<nav class="purple darken-4">
+	<div class="nav-wrapper container">
+		<a id="brand-logo" href="/">VoteForQuote</a>
+		<ul id="nav-mobile" class="right hide-on-med-and-down">
+			<li><a href="/">home</a></li>
+			<li><a href="/quotes">quotes</a></li>
+			<% if (typeof loggedIn === 'undefined' || !loggedIn) { %>
+				<li><a href="/users/signup">sign up</a></li>
+				<li><a href="/users/signin">sign in</a></li>
+			<% } else { %>
+				<li><a href="/profile">profile</a></li>
+			<% } %>
+		</ul>
+	</div>
+</nav>
