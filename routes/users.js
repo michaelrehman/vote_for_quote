@@ -1,23 +1,6 @@
 const router = require('express').Router();
 const path = require('path');
-const firebase = require('firebase/app');
-require('firebase/auth');
-require('firebase/firestore');
-
-// Firebase configs are considered public; therefore,
-// define security rules to protect any data/files.
-// https://firebase.google.com/docs/projects/learn-more?authuser=0#config-files-objects
-const firebaseConfig = JSON.parse(`{
-	"apiKey":"AIzaSyD_7XHQ01t1rczjfTfeTrduTYuBqHcTvw8",
-	"authDomain":"vote-for-quote.firebaseapp.com",
-	"databaseURL":"https://vote-for-quote.firebaseio.com",
-	"projectId":"vote-for-quote",
-	"storageBucket":"vote-for-quote.appspot.com",
-	"messagingSenderId":"57143933951",
-	"appId":"1:57143933951:web:2ab07163f80e986f9a05ca",
-	"measurementId":"G-R7S23CQ19S"
-}`);
-firebase.initializeApp(firebaseConfig);
+const { auth } = require('../server.js');
 
 // https://stackoverflow.com/questions/46155
 const isValidEmail = (email) => {
@@ -28,50 +11,52 @@ const isValidEmail = (email) => {
 // Profile page
 router.get('/profile/:name', (req, res) => {
 	const { name } = req.params;
-	res.render(path.join('users', 'profile'), { name });
+	res.render(path.join('users', 'profile'), { currUser: auth.currentUser, name });
 });
 
 // Sign up page
 router.get('/signup', (req, res) => {
-	res.render(path.join('users', 'signup'));
+	if (auth.currentUser) { return res.redirect(200, '/'); }
+	return res.status(200).render(path.join('users', 'signup'));
 });
 
 // Create account
 router.post('/signup', async (req, res) => {
 	const { username, email, password } = req.body;
 	// Validate inputs
-	// TODO: check for uniqueness of username & email
+	// TODO: check for uniqueness of username
 	const errors = JSON.parse('{"username":"","password":"","email":""}');
 	if (!isValidEmail(email)) { errors.email = 'Invalid email.'; }
 	if (password.length < 6) { errors.password = 'Password must be at least 6 characters.' }
 	if (errors.username || errors.email || errors.password) {
 		return res.status(200).render(path.join('users', 'signup'), {
-			errors, username, email, password
+			errors, username, email
 		});
 	}
 	// Create account
 	try {
-		await firebase.auth().createUserWithEmailAndPassword(email, password);
-		await firebase.auth().signInWithEmailAndPassword(email, password);
-		await firebase.auth().currentUser.updateProfile({ displayName: username });
+		await auth.createUserWithEmailAndPassword(email, password);
+		await auth.signInWithEmailAndPassword(email, password);
+		await auth.currentUser.updateProfile({ displayName: username });
 	} catch (err) {
-		console.err(`${err.code}: ${err.message}`);
+		console.error(`${err.code}: ${err.message}`);
 		let statusCode = 500;
 		let errorMsg = 'Something went wrong.';
 		if (err.code === 'auth/email-already-in-use') {
 			statusCode = 200;
-			errorMsg = 'An account with this email already exists.';
+			errorMsg = 'An account with that email already exists.';
 		}
-		return res.status(statusCode).render(path.join('users', 'signin'), {
-			errorMsg
+		return res.status(statusCode).render(path.join('users', 'signup'), {
+			errorMsg, username
 		});
 	}
-	return res.status(200).render(path.join('quotes', 'index'));
+	return res.redirect(200, '/');
 });
 
 // Sign in page
 router.get('/signin', (req, res) => {
-	res.render(path.join('users', 'signin'));
+	if (auth.currentUser) { return res.redirect(200, '/'); }
+	return res.status(200).render(path.join('users', 'signin'));
 });
 
 // Sign in to account
@@ -87,10 +72,8 @@ router.post('/signin', async (req, res) => {
 		});
 	}
 	try {
-		const user = await firebase.auth().signInWithEmailAndPassword(email, password);
-		if (user) {
-			return res.status(200).render(path.join('quotes', 'index'));
-		}
+		await auth.signInWithEmailAndPassword(email, password);
+		return res.redirect(200, '/');
 	} catch (err) {
 		console.error(`${err.code}: ${err.message}`);
 		let statusCode = 500;
@@ -108,10 +91,9 @@ router.post('/signin', async (req, res) => {
 	}
 });
 
-firebase.auth().onAuthStateChanged((user) => {
-	if (user) {
-		console.log(user.displayName);
-	}
+router.get('/signout', (req, res) => {
+	auth.signOut();
+	return res.redirect(200, '/users/signin');
 });
 
 module.exports = router;
