@@ -1,1 +1,41 @@
 <h1>Quotes</h1>
+<%- include('../partials/messages') %>
+<div class="fixed-action-btn">
+	<a class="btn-floating btn-large red modal-trigger" href="#submitQuote">
+		<i class="large material-icons">add</i>
+	</a>
+</div>
+
+<form id="submitQuote" class="modal" method="POST" action="/quotes">
+	<div class="modal-content">
+		<h5>Create New Quote</h5>
+		<div class="row">
+			<span class="input-field col s12 m12">
+				<input id="i_quote" class="validate" name="quote" type="text">
+				<label for="i_quote" class="textarea-label">New Quote</label>
+			</span>
+
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="modal-close waves-effect waves-green btn-flat" type="button">Cancel</button>
+		<button class="modal-close waves-effect waves-green btn-flat" type="submit">Submit</button>
+	</div>
+</form>
+
+<% if (typeof quotes !== 'undefined') { %>
+	<% quotes.forEach((quote) => { %>
+		<div>"<%= quote.quote %>" - <%= quote.author %></div>
+	<% }); %>
+<% } %>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		// Floating buttons
+		const floatingBtns = document.querySelectorAll('.fixed-action-btn');
+		M.FloatingActionButton.init(floatingBtns, { toolbarEnabled: false });
+		// Modals
+		const modals = document.querySelectorAll('.modal');
+		M.Modal.init(modals);
+	});
+</script>

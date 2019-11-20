@@ -1,23 +1,25 @@
-<% const errorsExist = typeof errors !== 'undefined'; %>
-<%- include('../partials/messages') %>
+<% const inputErrorsExist = typeof errors !== 'undefined'; %>
 <h1>Sign In</h1>
-<form class="col s12" method="POST" action="/users/signin">
+<%- include('../partials/messages') %>
+<form method="POST" action="/users/signin">
 	<div class="row">
 		<div class="input-field col s12">
-			<input id="i_email" class="validate" name="email" type="email" value="<%= typeof email != 'undefined' ? email : '' %>">
+			<input id="i_email" class="validate" name="email" type="text" value="<%= typeof email != 'undefined' ? email : '' %>">
 			<label for="i_email">Email</label>
-			<% if (errorsExist && errors.email) { %>
+			<% if (inputErrorsExist && errors.email) { %>
 				<span class="error"><%= errors.email %></span>
 			<% } %>
 		</div>
 		<div class="input-field col s12">
 			<input id="i_password" class="validate" name="password" type="password">
 			<label for="i_password">Password</label>
-			<% if (errorsExist && errors.password) { %>
+			<% if (inputErrorsExist && errors.password) { %>
 				<span class="error"><%= errors.password %></span>
 			<% } %>
 			<div>Don't have an account? <a href="/users/signup">Sign up.</a></div>
 		</div>
+		<div class="col s12">
+			<button class="waves-effect waves-light btn right" type="submit">Sign In</button>
+		</div>
 	</div>
-	<button class="waves-effect waves-light btn" type="submit">Sign In</button>
 </form>

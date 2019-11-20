@@ -9,9 +9,16 @@
     "scss": "node-sass client/scss -o dist/css --output-style compressed"
   },
   "keywords": [],
-  "author": "Michael Rehman",
+  "author": {
+	  "name": "Michael Rehman",
+	  "url": "https://github.com/michaelrehman"
+  },
   "license": "MIT",
   "private": true,
+  "repository": {
+	  "type": "git",
+	  "url": "git+https://github.com/michaelrehman/vote_for_quote.git"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "ejs": "^2.7.2",
