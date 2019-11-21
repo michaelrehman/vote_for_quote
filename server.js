@@ -24,7 +24,8 @@ const auth = firebase.auth();
 
 module.exports = {
 	auth,
-	db: firebase.firestore()
+	db: firebase.firestore(),
+	FieldValue: firebase.firestore.FieldValue
 };
 
 // Initialize app and set template engine
@@ -36,7 +37,13 @@ app.use(layout);
 app.use(bodyParser.urlencoded(JSON.parse('{"extended":"true"}')));
 
 // Static assets
-app.use(express.static(path.join(__dirname, 'dist')));
+if (process.env.NODE_ENV !== 'production') {
+	app.use(express.static(path.join(__dirname, 'client')));
+	console.log('using static assets from /client');
+} else {
+	app.use(express.static(path.join(__dirname, 'dist')));
+	console.log('using static assets from /dist');
+}
 
 // Routes
 app.use('/', require('./routes/quotes'));	// homepage, displaying quotes

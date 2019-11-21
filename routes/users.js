@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const path = require('path');
 const { auth, db } = require('../server.js');
-const { isValidEmail, usernameAlreadyExists, determineError } = require('./utils/utils');
+const { isValidEmail, usernameAlreadyExists, determineError } = require('../utils/utils');
 
-require('./utils/utils')
+require('../utils/obervers')
 	.setAuthObserver(auth, (user) => {
 		if (user) { console.log('signed in'); }
 		else { console.log('signed out'); }

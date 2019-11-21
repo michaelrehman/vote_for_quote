@@ -40,11 +40,11 @@ module.exports = {
 		}
 		return { statusCode, errorMsg };
 	},
-	// Writing them this way makes them customizable
-	setAuthObserver: (auth, successCallback, errorCallback) => {
-		return auth.onAuthStateChanged(successCallback, errorCallback)
+	// Using momentjs since Firebase doesn't have before/after date comparisons.
+	parseTimestamp: (seconds, format='MMM Do YYYY, h:mm A') => {
+		return require('moment').unix(seconds).format(format);
 	},
-	setDbObserver: (docToWatch, successCallback, errorCallback) => {
-		return docToWatch.onSnapshot(successCallback, errorCallback)
+	generateTimeStamp: () => {
+		return require('moment')().unix();	// time in seconds
 	}
 };

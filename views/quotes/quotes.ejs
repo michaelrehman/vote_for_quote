@@ -24,18 +24,20 @@
 </form>
 
 <% if (typeof quotes !== 'undefined') { %>
+	<ul class="collection">
 	<% quotes.forEach((quote) => { %>
-		<div>"<%= quote.quote %>" - <%= quote.author %></div>
+		<li class="quote collection-item">
+			<span class="body"><%= quote.body %></span>
+			<div class="secondary-content">
+				<!-- TODO: upvote/downvote buttons -->
+			</div>
+			<div class="details">
+				<a class="author" href="/users/profile/<%= quote.author %>"><%= quote.author %></a>
+				<span class="date"><%= quote.date %></span>
+			</div>
+		</li>
 	<% }); %>
+	</ul>
 <% } %>
 
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-		// Floating buttons
-		const floatingBtns = document.querySelectorAll('.fixed-action-btn');
-		M.FloatingActionButton.init(floatingBtns, { toolbarEnabled: false });
-		// Modals
-		const modals = document.querySelectorAll('.modal');
-		M.Modal.init(modals);
-	});
-</script>
+<script defer src="/js/quotes.js"></script>

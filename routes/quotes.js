@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const path = require('path');
-const { auth, db } = require('../server');
-const { determineError, setDbObserver } = require('./utils/utils');
+const { auth, db, FieldValue } = require('../server');
+const { determineError, parseTimestamp, generateTimeStamp } = require('../utils/utils');
+const Quote = require('../utils/Quote');
 
 // Home page
 router.get('/', (req, res) => {
@@ -14,21 +15,37 @@ router.route('/quotes')
 	.get(async (req, res) => {
 		// If not signed in, redirect to homepage // TODO: send session error message (not signed in)
 		if (!auth.currentUser) { return res.redirect('/users/signin'); }
-		const quotes = [];
-		// TODO: Limit the documents read
-		// Everytime a quote is added, we POST to /quotes, which redirects to GET /quotes
-		const querySnapshot = await db.collection('users').get();
-		querySnapshot.forEach((qDocSnap) => {
-			const data = qDocSnap.data();
-			Object.values(data.quotes).forEach((quote) => quotes.push({ quote, author: data.username }));
-		});
+		let data = {};
 		try {
-
+			// Get quotes
+			const quoteDocSnapshot = await db.collection('quotes').doc('quotes').get();
+			if (quoteDocSnapshot.exists) {
+				data = quoteDocSnapshot.data();
+			}
 		} catch (err) {
 			const { statusCode, errorMsg } = determineError(err);
 			return res.status(statusCode).render(path.join('quotes', 'quotes'), {
 				errorMsg
 			});
+		}
+		// TODO: see if you can find a way to combine the loops
+		// Everytime a quote is added, we POST to /quotes, which redirects to GET /quotes
+		// TODO: Instead reading all the quotes, only read the new/changed ones
+		// TODO: Instead of storing the quotes in an array and rendering it, store them in the session
+		// 		 so we can render the page without having to wait for the firestore.
+		const quotes = [];	// array of quote objects
+		for (const username in data) {
+			const userQuotes = data[username];
+			userQuotes.forEach((quoteData) => {
+				const { body, timestamp, votes } = quoteData;
+				quotes.push((new Quote(username, body, timestamp, votes)));
+			});
+		}
+		// Sort quotes into descending order
+		if (quotes.length !== 0) {
+			quotes.sort(Quote.sortDatesDescending);
+		} else {
+			// TODO: output message when no quotes
 		}
 		return res.status(200).render(path.join('quotes', 'quotes'), { currUser: auth.currentUser, quotes });
 	})
@@ -38,14 +55,16 @@ router.route('/quotes')
 		if (!auth.currentUser) { return res.redirect('/users/signin'); }
 		// TODO: input validation
 		const { quote } = req.body;
-		const timestamp = new Date().getTime();
+		const timestamp = generateTimeStamp();
 		try {
-			await db.collection('users').doc(auth.currentUser.uid).set(
-				{ quotes: { [timestamp]: quote }},
-				{ merge: true }
-			);
+			await db.collection('quotes').doc('quotes').update({
+				[auth.currentUser.displayName]: FieldValue.arrayUnion({
+					body: quote, timestamp, votes: 0
+				})
+			});
 		} catch (err) {
-			console.error(`${err.code}: ${err.message}`);
+			// TODO: alert user
+			determineError(err);
 		}
 		res.redirect('/quotes');
 	});

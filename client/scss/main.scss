@@ -2,25 +2,6 @@ strong {
 	font-weight: 700 !important;
 }
 
-// textarea {
-// 	background-color: #e2e2e2;
-// 	border: none;
-// 	border-radius: 0;
-// 	outline: none;
-// 	height: 3rem;
-// 	width: 100%;
-// 	font-size: 16px;
-// 	margin-top: 8px;
-// 	box-shadow: none;
-// 	box-sizing: content-box;
-// 	transition: box-shadow .3s, border .3s;
-// }
-
-// .input-field.col label.textarea-label {
-// 	color: green;
-// 	font-size: 1.25rem;
-// }
-
 #brand-logo {
 	font-size: 1.5rem;
 }
@@ -49,5 +30,22 @@ strong {
 	@media screen and (min-width: 601px) {
 		display: flex;
 		align-items: center;
+	}
+}
+
+.quote {
+	.body {
+		font-size: 1.25rem;
+	}
+	.details {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.9rem;
+		.author {
+			font-style: italic;
+		}
+		.author::before {
+			content: '— ';
+		}
 	}
 }
