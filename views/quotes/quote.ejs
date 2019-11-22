@@ -1,0 +1,18 @@
+<li class="quote collection-item">
+	<% let userIsAuthor = currUser.displayName === quote.author; %>
+	<div class="body">
+		<%= quote.body %>
+		<% if (!userIsAuthor) { %>
+			<div class="secondary-content">
+				<!-- TODO: upvote/downvote buttons -->
+				<i class="small material-icons">arrow_upwards</i>
+				<i class="small material-icons">arrow_downwards</i>
+			</div>
+		<% } %></div>
+	<div class="details">
+		<% if (quote.author) { %>
+			<a class="author" href="/users/profile/<%= quote.author %>"><%= quote.author %></a>
+		<% } %>
+		<span class="date"><%= quote.date %></span>
+	</div>
+</li>

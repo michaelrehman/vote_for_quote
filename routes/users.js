@@ -1,13 +1,14 @@
 const router = require('express').Router();
 const path = require('path');
-const { auth, db } = require('../server.js');
-const { isValidEmail, usernameAlreadyExists, determineError } = require('../utils/utils');
+const { auth, db } = require('../server');
+const { isValidEmail, determineError, trim } = require('../utils/utils');
+const { setAuthObserver, usernameAlreadyExists } = require('../utils/firebase');
 
-require('../utils/obervers')
-	.setAuthObserver(auth, (user) => {
-		if (user) { console.log('signed in'); }
-		else { console.log('signed out'); }
-	}, (err) => console.error(`${err.code}: ${err.message}`));
+setAuthObserver(auth, (user) => {
+	// TODO: store user in session so the currUser doesn't have to be passed in with every render
+	if (user) { console.log('signed in'); }
+	else { console.log('signed out'); }
+}, (err) => console.error(`${err.code}: ${err.message}`));
 
 // Sign up
 router.route('/signup')
@@ -19,10 +20,10 @@ router.route('/signup')
 	})
 	// Create account
 	.post(async (req, res) => {
-		const { username, email, password } = req.body;
+		let { username, email, password } = req.body;
+		[username, email, password] = trim(username, email, password);
 		// Validate inputs
-		// TODO: add security rule for unique usernames and adjust code (https://stackoverflow.com/questions/35243492)
-		const errors = JSON.parse('{"username":"","password":"","email":""}');
+		const errors = {};
 		if (!username) { errors.username = 'Please input a username.'; }
 		if (!isValidEmail(email)) { errors.email = 'Invalid email.'; }
 		if (password.length < 6) { errors.password = 'Password must be at least 6 characters.' }
@@ -34,6 +35,7 @@ router.route('/signup')
 		}
 		// Create account
 		try {
+			// TODO: add security rule for unique usernames and remove this (https://stackoverflow.com/questions/35243492)
 			if (await usernameAlreadyExists(username, db)) {
 				throw {
 					code: 'auth/username-already-in-use',
@@ -45,10 +47,9 @@ router.route('/signup')
 			await auth.currentUser.updateProfile({ displayName: username });
 			// Firestore
 			await db.collection('users').doc(auth.currentUser.uid).set({ email, username });
-			await db.collection('usernames').doc('usernames').set(
-				{ [username]: auth.currentUser.uid },
-				{ merge: true }
-			);
+			await db.collection('usernames').doc('usernames').update({
+				[username]: auth.currentUser.uid
+			});
 		} catch (err) {
 			const { statusCode, errorMsg } = determineError(err);
 			// Rerender page with registration errors
@@ -69,9 +70,10 @@ router.route('/signin')
 	})
 	// Sign in to account
 	.post(async (req, res) => {
-		const { email, password } = req.body;
+		let { email, password } = req.body;
+		[email, password] = trim(email, password);
 		// Validate inputs
-		const errors = JSON.parse('{"password":"","email":""}');
+		const errors = {};
 		if (!isValidEmail(email)) { errors.email = 'Invalid email.'; }
 		if (password.length === 0) { errors.password = 'Please input a password.' }
 		if (errors.email || errors.password) {

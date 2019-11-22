@@ -4,31 +4,17 @@ module.exports = {
 		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(String(email).toLowerCase());
 	},
-	usernameAlreadyExists: async (username, db) => {
-		try {
-			// All usernames stored in a single document instead of a multiple.
-			// This keeps the amount of reads down.
-			const usernamesDocRef = db.collection('usernames').doc('usernames');
-			const usernamesDoc = await usernamesDocRef.get();
-			if (usernamesDoc.exists) {
-				// Should always execute but to be safe //TODO: handle when !exsits
-				const usernames = usernamesDoc.data();
-				return !!usernames[username];
-			}
-		} catch (err) {
-			console.error('Could not retrieve document: ' + err);
-		}
-	},
 	determineError: (err) => {
 		console.error(`${err.code}: ${err.message}`);
 		let statusCode = 200;	// default
 		let errorMsg = '';
+		// TODO: after implementing unique usernames rule, modify this
 		if (err.code === 'auth/username-already-in-use') {	// custom
-			errorMsg = 'This username is already taken.';
+			errorMsg = 'That username is already taken.';
 		} else if (err.code === 'auth/email-already-in-use') {
-			errorMsg = 'An account with this email already exists.';
+			errorMsg = 'An account with that email already exists.';
 		} else if (err.code === 'auth/user-not-found') {
-			errorMsg = 'This email is not associated with an account.';
+			errorMsg = 'That email is not associated with an account.';
 		} else if (err.code === 'auth/wrong-password') {
 			errorMsg = 'Incorrect password.';
 		} else if (err.code === 'auth/too-many-requests') {
@@ -46,5 +32,18 @@ module.exports = {
 	},
 	generateTimeStamp: () => {
 		return require('moment')().unix();	// time in seconds
+	},
+	// Remove all whitespace
+	trim: (...inputs) => {
+		return inputs.map((inp) => inp.replace(/\s/g, ''));
+	},
+	generateQuoteObjects(idQuotesMap, author=undefined) {
+		const { Quote } = require('./models');
+		const quoteObjects = [];
+		for (const qid in idQuotesMap) {
+			const { body, timestamp, votes } = idQuotesMap[qid];
+			quoteObjects.push(new Quote(qid, author, body, timestamp, votes));
+		}
+		return quoteObjects;
 	}
 };

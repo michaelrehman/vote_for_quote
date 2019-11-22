@@ -1,1 +1,16 @@
-<h1><%= name %></h1>
+<% if (typeof profile !== 'undefined') { %>
+	<h1><%= profile.username %></h1>
+	<h5>&#40;<%= profile.email %>&#41;</h5>
+	<% if (profile.quotes && profile.quotes.length !== 0) { %>
+		<h3>quotes</h3>
+		<ul class="collection">
+			<% profile.quotes.forEach((quote) => { %>
+				<% include ../quotes/quote %>
+			<% }); %>
+		</ul>
+	<% } else { %>
+		<h4>No quotes &#58;&#40;</h4>
+	<% } %>
+<% } else { %>
+	<h1>Could not get profile</h1>
+<% } %>

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server",
     "dev": "nodemon server",
-    "build": "webpack -c webpack.config.js",
+    "client-sass": "node-sass client/scss -o client/css --output-style compressed",
+    "build": "webpack -c webpack.config.js"
   },
   "keywords": [],
   "author": {
@@ -25,7 +26,8 @@
     "express": "^4.17.1",
     "express-ejs-layouts": "^2.5.0",
     "firebase": "^7.4.0",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "shortid": "^2.2.15"
   },
   "devDependencies": {
     "css-loader": "^3.2.0",
@@ -35,5 +37,10 @@
     "sass-loader": "^8.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
+  },
+  "nodemonConfig": {
+    "events": {
+      "start": "cls || clear"
+    }
   }
 }

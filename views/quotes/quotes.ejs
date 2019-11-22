@@ -14,7 +14,6 @@
 				<input id="i_quote" class="validate" name="quote" type="text">
 				<label for="i_quote" class="textarea-label">New Quote</label>
 			</span>
-
 		</div>
 	</div>
 	<div class="modal-footer">
@@ -23,21 +22,14 @@
 	</div>
 </form>
 
-<% if (typeof quotes !== 'undefined') { %>
+<% if (typeof quotes !== 'undefined' && quotes.length !== 0) { %>
 	<ul class="collection">
 	<% quotes.forEach((quote) => { %>
-		<li class="quote collection-item">
-			<span class="body"><%= quote.body %></span>
-			<div class="secondary-content">
-				<!-- TODO: upvote/downvote buttons -->
-			</div>
-			<div class="details">
-				<a class="author" href="/users/profile/<%= quote.author %>"><%= quote.author %></a>
-				<span class="date"><%= quote.date %></span>
-			</div>
-		</li>
+		<% include quote %>
 	<% }); %>
 	</ul>
+<% } else { %>
+	<h4>No quotes &#58;&#40; Will you be the first?</h4>
 <% } %>
 
 <script defer src="/js/quotes.js"></script>

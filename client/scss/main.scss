@@ -36,6 +36,8 @@ strong {
 .quote {
 	.body {
 		font-size: 1.25rem;
+		display: flex;
+		justify-content: space-between;
 	}
 	.details {
 		display: flex;
