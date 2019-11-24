@@ -47,7 +47,6 @@ router.route('/quotes')
 	.post(async (req, res) => {
 		// If not signed in, redirect to homepage // TODO: send session error message (not signed in)
 		if (!auth.currentUser) { return res.redirect('/users/signin'); }
-		// TODO: input validation
 		let { quote } = req.body;
 		quote = quote.trim();
 		if (quote.length !== 0) {
@@ -63,9 +62,11 @@ router.route('/quotes')
 				// TODO: alert user
 				determineError(err);
 			}
-		} else {
-			// TODO: alert user that something must be inputted
 		}
+		// Typically, the alert messages are hangled on the backend, but
+		// I did it on the frontend this time cause of the modal.
+		// The if-statement exists in case someone submits a POST request
+		// through an external application (i.e. Postman).
 		res.redirect('/quotes');
 	});
 

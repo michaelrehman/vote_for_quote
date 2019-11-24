@@ -3,8 +3,8 @@ const cssExtract = require('mini-css-extract-plugin');
 module.exports = {
 	mode: 'production',
 	entry: {
-		quotes: './client/js/quotes.js',
-		css: './client/scss/main.scss'
+		client: './client/js/client.js',
+		css: './client/scss/main.scss' // this generates an empty js file // TODO: get rid of it
 	},
 	output: {
 		path: require('path').resolve(__dirname, 'dist'),

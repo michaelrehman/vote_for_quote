@@ -11,11 +11,8 @@ npm install
 ```
 npm run dev
 ```
-##### Note
-The .scss in client/scss must be compiled. Use whatever method you desire, but I have provided an npm script to accomplish this in a compressed style:
-```
-npm run client-scss
-```
+#### Note
+The .scss in client/scss must be compiled. Use whatever method you desire, but I have provided an npm script to accomplish this in a compressed style: `npm run client-sass`
 
 ### Build
 ```

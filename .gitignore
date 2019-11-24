@@ -1,6 +1,9 @@
 # These are the static files compiled from /client
 /dist
 
+# .env
+*.env
+
 # Logs
 logs
 *.log

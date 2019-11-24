@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const path = require('path');
 const { auth, db } = require('../server');
-const { isValidEmail, determineError, trim } = require('../utils/utils');
+const { isValidEmail, determineError } = require('../utils/utils');
 const { setAuthObserver, usernameAlreadyExists } = require('../utils/firebase');
 
 setAuthObserver(auth, (user) => {
@@ -21,19 +21,22 @@ router.route('/signup')
 	// Create account
 	.post(async (req, res) => {
 		let { username, email, password } = req.body;
-		[username, email, password] = trim(username, email, password);
-		// Validate inputs
-		const errors = {};
-		if (!username) { errors.username = 'Please input a username.'; }
+		// Validate inputs (no spaces)
+		const errors = { username: [], email: '', password: [] };
+		// username
+		if (!username) { errors.username.push('Please input a username.'); }
+		else if (username.includes(' ')) { errors.username.push('Username cannot contain spaces.'); }
+		// email
 		if (!isValidEmail(email)) { errors.email = 'Invalid email.'; }
-		if (password.length < 6) { errors.password = 'Password must be at least 6 characters.' }
-		if (errors.username || errors.email || errors.password) {
-			// Rerender page w/ form validation errors
+		// password
+		if (password.includes(' ')) { errors.password.push('Password cannot contain spaces.'); }
+		if (password.length < 6) { errors.password.push('Password must be at least 6 characters.'); }
+		// Rerender page w/ form validation errors if they exist
+		if (errors.username.length !== 0 || errors.email || errors.password.length !== 0) {
 			return res.status(200).render(path.join('users', 'signup'), {
 				errors, username, email
 			});
 		}
-		// Create account
 		try {
 			// TODO: add security rule for unique usernames and remove this (https://stackoverflow.com/questions/35243492)
 			if (await usernameAlreadyExists(username, db)) {
@@ -71,8 +74,7 @@ router.route('/signin')
 	// Sign in to account
 	.post(async (req, res) => {
 		let { email, password } = req.body;
-		[email, password] = trim(email, password);
-		// Validate inputs
+		// Validate inputs (email and password entered)
 		const errors = {};
 		if (!isValidEmail(email)) { errors.email = 'Invalid email.'; }
 		if (password.length === 0) { errors.password = 'Please input a password.' }

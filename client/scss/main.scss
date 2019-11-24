@@ -8,11 +8,15 @@ strong {
 
 .error {
 	color: #b30000;
+	display: block;
 }
 
 .alert {
 	margin: 2.8rem 0;
 	padding: 0.75rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	border: 2px solid;
 	border-radius: 3px;
 	color: #eeeeee;
@@ -23,6 +27,13 @@ strong {
 	&.error {
 		background-color: #b30000;
 		border-color: #5c0202;
+	}
+	&.fade-out {
+		animation: fade-out 500ms forwards;
+	}
+	button {
+		font-size: 1.75rem;
+		color: inherit;
 	}
 }
 
@@ -49,5 +60,14 @@ strong {
 		.author::before {
 			content: '— ';
 		}
+	}
+}
+
+@keyframes fade-out {
+	from {
+		opacity: 1;
+	} to {
+		opacity: 0;
+		display: none;
 	}
 }

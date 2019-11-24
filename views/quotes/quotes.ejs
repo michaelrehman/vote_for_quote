@@ -1,7 +1,7 @@
 <h1>Quotes</h1>
-<%- include('../partials/messages') %>
+<%- include ../partials/messages %>
 <div class="fixed-action-btn">
-	<a class="btn-floating btn-large red modal-trigger" href="#submitQuote">
+	<a class="btn-floating btn-large red modal-trigger waves-effect waves-circle" href="#submitQuote">
 		<i class="large material-icons">add</i>
 	</a>
 </div>
@@ -18,7 +18,7 @@
 	</div>
 	<div class="modal-footer">
 		<button class="modal-close waves-effect waves-green btn-flat" type="button">Cancel</button>
-		<button class="modal-close waves-effect waves-green btn-flat" type="submit">Submit</button>
+		<button class="modal-close waves-effect waves-green btn-flat disabled" type="submit" disabled>Submit</button>
 	</div>
 </form>
 
@@ -31,5 +31,3 @@
 <% } else { %>
 	<h4>No quotes &#58;&#40; Will you be the first?</h4>
 <% } %>
-
-<script defer src="/js/quotes.js"></script>

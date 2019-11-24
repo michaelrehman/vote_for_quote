@@ -5,27 +5,23 @@ const path = require('path');
 const firebase = require('firebase/app');
 require('firebase/auth');
 require('firebase/firestore');
+require('dotenv').config();
 
-// Firebase configs are considered public; therefore,
-// define security rules to protect any data/files.
-// https://firebase.google.com/docs/projects/learn-more?authuser=0#config-files-objects
-// https://firebase.google.com/docs/rules/get-started?authuser=0
-firebase.initializeApp(JSON.parse(`{
-	"apiKey":"AIzaSyD_7XHQ01t1rczjfTfeTrduTYuBqHcTvw8",
-	"authDomain":"vote-for-quote.firebaseapp.com",
-	"databaseURL":"https://vote-for-quote.firebaseio.com",
-	"projectId":"vote-for-quote",
-	"storageBucket":"vote-for-quote.appspot.com",
-	"messagingSenderId":"57143933951",
-	"appId":"1:57143933951:web:2ab07163f80e986f9a05ca",
-	"measurementId":"G-R7S23CQ19S"
-}`));
+firebase.initializeApp({
+	apiKey: process.env.API_KEY,
+	authDomain: process.env.AUTH_DOMAIN,
+	databaseURL: process.env.DATABASE_URL,
+	projectId: process.env.PROJECT_ID,
+	storageBucket: process.env.STORAGE_ID,
+	messagingSenderId: process.env.MESSAGE_SENDER_ID,
+	appId: process.env.APP_ID,
+	measurementId: process.env.MEAUSUREMENT_ID
+});
 const auth = firebase.auth();
 
 module.exports = {
 	auth,
-	db: firebase.firestore(),
-	FieldValue: firebase.firestore.FieldValue
+	db: firebase.firestore()
 };
 
 // Initialize app and set template engine
@@ -33,8 +29,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(layout);
 
-// Allow access to request.body
+// Allow access to request.body for html encoded bodies (forms) and json (apis like fetch)
 app.use(bodyParser.urlencoded(JSON.parse('{"extended":"true"}')));
+app.use(bodyParser.json());
 
 // Static assets
 if (process.env.NODE_ENV !== 'production') {

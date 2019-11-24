@@ -4,6 +4,7 @@ module.exports = {
 		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(String(email).toLowerCase());
 	},
+	// For authentication and database errors
 	determineError: (err) => {
 		console.error(`${err.code}: ${err.message}`);
 		let statusCode = 200;	// default
@@ -32,10 +33,6 @@ module.exports = {
 	},
 	generateTimeStamp: () => {
 		return require('moment')().unix();	// time in seconds
-	},
-	// Remove all whitespace
-	trim: (...inputs) => {
-		return inputs.map((inp) => inp.replace(/\s/g, ''));
 	},
 	generateQuoteObjects(idQuotesMap, author=undefined) {
 		const { Quote } = require('./models');

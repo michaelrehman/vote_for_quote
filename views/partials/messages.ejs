@@ -1,10 +1,12 @@
 <% if (typeof successMsg !== 'undefined') { %>
 	<div class="alert success">
 		<strong><%= successMsg %></strong>
+		<button class="waves-effect waves-green btn-flat" type="button">&times;</button>
 	</div>
 <% } %>
 <% if (typeof errorMsg !== 'undefined') { %>
 	<div class="alert error">
 		<strong><%= errorMsg %></strong>
+		<button class="waves-effect waves-red btn-flat" type="button">&times;</button>
 	</div>
 <% } %>

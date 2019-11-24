@@ -7,7 +7,9 @@
 			<input id="i_username" class="validate" name="username" type="text" value="<%= typeof username != 'undefined' ? username : '' %>">
 			<label for="i_username">Username</label>
 			<% if (inputErrorsExist && errors.username) { %>
-				<span class="error"><%= errors.username %></span>
+				<% errors.username.forEach((userErr) => { %>
+					<span class="error"><%= userErr %></span>
+				<% }); %>
 			<% } %>
 		</div>
 		<div class="input-field col s12">
@@ -21,12 +23,14 @@
 			<input id="i_password" class="validate" name="password" type="password">
 			<label for="i_password">Password</label>
 			<% if (inputErrorsExist && errors.password) { %>
-				<span class="error"><%= errors.password %></span>
+				<% errors.password.forEach((passErr) => { %>
+					<span class="error"><%= passErr %></span>
+				<% }); %>
 			<% } %>
 			<div>Aleady have an account? <a href="/users/signin">Sign in.</a></div>
 		</div>
 		<div class="col s12">
-			<button class="waves-effect waves-light btn right" type="submit">Sign Up</button>
+			<button class="waves-effect waves-light btn right disabled" type="submit" disabled>Sign Up</button>
 		</div>
 	</div>
 </form>
