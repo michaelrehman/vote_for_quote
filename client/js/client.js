@@ -2,15 +2,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 	// Floating buttons
 	const floatingBtns = document.querySelectorAll('.fixed-action-btn');
-	M.FloatingActionButton.init(floatingBtns, {
-		toolbarEnabled: false
-	});
+	M.FloatingActionButton.init(floatingBtns);
 	// Modals
 	const modals = document.querySelectorAll('.modal');
-	M.Modal.init(modals);
+	M.Modal.init(modals, { dismissible: false });
 });
 
-// Disable submit button if all inputs are empty
 const form = document.querySelector('form');
 if (form) {
 	const subBtn = form.querySelector('button[type="submit"]');
@@ -23,7 +20,7 @@ if (form) {
 			subBtn.classList.add('disabled');
 		}
 	};
-	// Handle enabling and disabling the submit button
+	// enable/disable the submit button if inputs are empty
 	form.addEventListener('keyup', function() {
 		let isButtonEnabled = true;
 		for (const input of this.elements) {
@@ -32,17 +29,30 @@ if (form) {
 		}
 		enableSubBtn(isButtonEnabled);
 	});
-	// Handle the quote submission
+	// Handle the quote submission, max character length, and cancel
 	if (location.pathname === '/quotes') {
+		let maxLength = form['i_quote'].getAttribute('maxlength');	// inital value set in html on page load
+		// max length
+		form['i_quote'].addEventListener('keyup', function() {
+			if (this.getAttribute('maxlength') !== '200') {
+				// in case someone modifes the markup
+				// quote is only submitted on the backend if length (0, 200]
+				this.setAttribute('maxlength', '200');
+				maxLength = 200;
+			}
+			const charLimit = form.querySelector('span.helper-text');
+			charLimit.textContent = maxLength - this.value.length;
+		});
+		// submission
 		form.addEventListener('submit', async (event) => {
 			event.preventDefault();
 			let quote = form['i_quote'].value.trim();
-			if (quote) {
+			if (quote.length > 0 && quote.length <= 140) {
 				const resp = await fetch('/quotes', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'Accept': 'text/html'
+						Accept: 'text/html'
 					},
 					body: JSON.stringify({ quote }),
 					redirect: 'follow'
@@ -50,12 +60,19 @@ if (form) {
 				// Because fetch does follow the
 				// redirect but doesn't change the URL.
 				window.location = resp.url;
+			} else if (quote.length > maxLength) {
+				M.toast({ html: `Quote cannot exceed ${maxLength} characters.` });
 			} else {
-				document.querySelector('a[href="#submitQuote"]').click();
 				M.toast({ html: 'Cannot submit empty quotes.' });
 				form['i_quote'].value = '';
 				enableSubBtn(false);
 			}
+		});
+		// cancel
+		form.querySelector('button[type="button"]').addEventListener('click', () => {
+			form.querySelector('span.helper-text').textContent = maxLength;
+			form['i_quote'].value = '';
+			enableSubBtn(false);
 		});
 	}
 }

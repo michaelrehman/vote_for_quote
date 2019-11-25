@@ -34,7 +34,7 @@ router.route('/quotes')
 		const displayQuotes = [];	// array of quote objects
 		allUserSnaps.forEach((userSnap) => {	// loops through all documents
 			const { username, quotes } = userSnap.data();
-			displayQuotes.push(...generateQuoteObjects(quotes, username, false));
+			displayQuotes.push(...generateQuoteObjects(quotes, username));
 		});
 		displayQuotes.sort(require('../utils/models').Quote.sortDatesDescending);
 		return res.status(200).render(quotesPagePath, { quotes: displayQuotes });
@@ -43,14 +43,12 @@ router.route('/quotes')
 	.post(async (req, res) => {
 		let { quote } = req.body;
 		quote = quote.trim();
-		if (quote.length !== 0) {
+		if (quote.length > 0 && quote.length <= 200) {	// submit only if length (0, 200]
 			try {
 				await db.collection('users').doc(auth.currentUser.uid).set({
-					quotes: {
-						[require('shortid').generate()]: {
-							body: quote, timestamp: generateTimeStamp(), votes: 0
-						}
-					}
+					quotes: { [require('shortid').generate()]: {
+						body: quote, timestamp: generateTimeStamp(), votes: 0
+					}}
 				}, { merge: true });
 			} catch (err) {
 				// TODO: alert user

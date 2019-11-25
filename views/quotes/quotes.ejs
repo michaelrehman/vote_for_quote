@@ -1,7 +1,7 @@
 <h1>Quotes</h1>
 <%- include ../partials/messages %>
 <div class="fixed-action-btn">
-	<a class="btn-floating btn-large red modal-trigger waves-effect waves-circle" href="#submitQuote">
+	<a class="btn-floating btn-large red modal-trigger waves-effect waves-circle" href="#submitQuote" role="button">
 		<i class="large material-icons">add</i>
 	</a>
 </div>
@@ -11,14 +11,15 @@
 		<h5>Create New Quote</h5>
 		<div class="row">
 			<span class="input-field col s12 m12">
-				<input id="i_quote" class="validate" name="quote" type="text">
+				<input id="i_quote" class="validate" name="quote" type="text" maxlength="200">
 				<label for="i_quote" class="textarea-label">New Quote</label>
+				<span class="helper-text right">200</span>
 			</span>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="modal-close waves-effect waves-green btn-flat" type="button">Cancel</button>
-		<button class="modal-close waves-effect waves-green btn-flat disabled" type="submit" disabled>Submit</button>
+		<button class="btn-flat waves-effect waves modal-close" type="button" role="button">Cancel</button>
+		<button class="btn-flat waves-effect waves-teal disabled" type="submit" role="button" disabled>Submit</button>
 	</div>
 </form>
 

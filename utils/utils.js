@@ -34,7 +34,7 @@ module.exports = {
 	generateTimeStamp: () => {
 		return require('moment')().unix();	// time in seconds
 	},
-	generateQuoteObjects(idQuotesMap, author, doSort) {
+	generateQuoteObjects(idQuotesMap, author, doSort=false) {
 		const { Quote } = require('./models');
 		const quoteObjects = [];
 		for (const qid in idQuotesMap) {

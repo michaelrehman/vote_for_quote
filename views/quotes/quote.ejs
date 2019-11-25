@@ -1,14 +1,25 @@
 <li class="quote collection-item">
 	<% let userIsAuthor = currUser.displayName === quote.author; %>
-	<div class="body">
-		<%= quote.body %>
+	<div class="content">
+		<span class="body"><%= quote.body %></span>
 		<div class="secondary-content">
-			<% if (!userIsAuthor) { %>
-				<i class="small material-icons">remove_circle</i>
+			<!-- TODO: button logic (this is gonna hurt) -->
+			<% if (userIsAuthor) { %>
+				<button class="btn-flat waves-effect waves-light blue" type="button">
+					<i class="small material-icons white-text">edit</i>
+				</button>
+				<strong class="votes black-text center-align"><%= quote.votes %></strong>
+				<button class="btn-flat waves-effect waves-light red" type="button">
+					<i class="small material-icons white-text">remove</i>
+				</button>
 			<% } else { %>
-				<!-- TODO: upvote/downvote buttons -->
-				<i class="small material-icons">keyboard_arrow_up</i>
-				<i class="small material-icons">keyboard_arrow_down</i>
+				<button class="btn-flat waves-effect" type="button">
+					<i class="small material-icons">keyboard_arrow_up</i>
+				</button>
+				<strong class="votes black-text center-align"><%= quote.votes %></strong>
+				<button class="btn-flat waves-effect" type="button">
+					<i class="small material-icons">keyboard_arrow_down</i>
+				</button>
 			<% } %>
 		</div>
 	</div>

@@ -4,11 +4,10 @@ const { auth, db } = require('../server');
 const { isValidEmail, determineError } = require('../utils/utils');
 const { setAuthObserver, usernameAlreadyExists } = require('../utils/firebase');
 
-// setAuthObserver(auth, (user) => {
-// 	// TODO: store user in session so the currUser doesn't have to be passed in with every render
-// 	if (user) { console.log('signed in'); }
-// 	else { console.log('signed out'); }
-// }, (err) => console.error(`${err.code}: ${err.message}`));
+setAuthObserver(auth, (user) => {
+	if (user) { console.log('signed in'); }
+	else { console.log('signed out'); }
+}, (err) => console.error(`${err.code}: ${err.message}`));
 
 // Sign up
 router.route('/signup')

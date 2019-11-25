@@ -45,21 +45,30 @@ strong {
 }
 
 .quote {
-	.body {
+	justify-content: space-between;
+	align-items: center;
+	.content {
 		font-size: 1.25rem;
 		display: flex;
-		justify-content: space-between;
+		justify-content: inherit;
+		align-items: inherit;
+		.body {
+			max-width: 90%;
+		}
 		.secondary-content {
-			display: inherit;
+			display: flex;
 			flex-direction: column;
-			i {
+			button {
 				display: block;
+				font-weight: 700 !important;
+				color: #000000;
+				background-color: #ebebeb;
 			}
 		}
 	}
 	.details {
 		display: flex;
-		justify-content: space-between;
+		justify-content: inherit;
 		font-size: 0.9rem;
 		.author {
 			font-style: italic;
