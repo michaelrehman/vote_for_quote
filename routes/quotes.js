@@ -5,22 +5,20 @@ const { determineError, generateTimeStamp, generateQuoteObjects } = require('../
 
 // Home page
 router.get('/', (req, res) => {
-	res.status(200).render(path.join('quotes', 'index'), { currUser: auth.currentUser });
+	res.status(200).render(path.join('quotes', 'index'));
 });
 
 // Quotes page
 router.route('/quotes')
 	// Display quotes
 	.get(async (req, res) => {
-		// If not signed in, redirect to homepage // TODO: send session error message (not signed in)
-		if (!auth.currentUser) { return res.redirect('/users/signin'); }
 		const quotesPagePath = path.join('quotes', 'quotes');
 		let allUserSnaps;
 		try {
 			// Get quotes from each user
 			allUserSnaps = await db.collection('users').get();
 			if (allUserSnaps.empty) {
-				return res.status(200).render(quotesPagePath, { currUser: auth.currentUser });
+				return res.status(200).render(quotesPagePath);
 			}
 		} catch (err) {
 			const { statusCode, errorMsg } = determineError(err);
@@ -36,17 +34,13 @@ router.route('/quotes')
 		const displayQuotes = [];	// array of quote objects
 		allUserSnaps.forEach((userSnap) => {	// loops through all documents
 			const { username, quotes } = userSnap.data();
-			displayQuotes.push(...generateQuoteObjects(quotes, username));
+			displayQuotes.push(...generateQuoteObjects(quotes, username, false));
 		});
 		displayQuotes.sort(require('../utils/models').Quote.sortDatesDescending);
-		return res.status(200).render(quotesPagePath, {
-			currUser: auth.currentUser, quotes: displayQuotes
-		});
+		return res.status(200).render(quotesPagePath, { quotes: displayQuotes });
 	})
 	// Create quote
 	.post(async (req, res) => {
-		// If not signed in, redirect to homepage // TODO: send session error message (not signed in)
-		if (!auth.currentUser) { return res.redirect('/users/signin'); }
 		let { quote } = req.body;
 		quote = quote.trim();
 		if (quote.length !== 0) {

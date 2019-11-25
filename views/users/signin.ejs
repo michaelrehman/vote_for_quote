@@ -7,14 +7,14 @@
 			<input id="i_email" class="validate" name="email" type="text" value="<%= typeof email != 'undefined' ? email : '' %>">
 			<label for="i_email">Email</label>
 			<% if (inputErrorsExist && errors.email) { %>
-				<span class="error"><%= errors.email %></span>
+				<span class="helper-text error"><%= errors.email %></span>
 			<% } %>
 		</div>
 		<div class="input-field col s12">
 			<input id="i_password" class="validate" name="password" type="password">
 			<label for="i_password">Password</label>
 			<% if (inputErrorsExist && errors.password) { %>
-				<span class="error"><%= errors.password %></span>
+				<span class="helper-text error"><%= errors.password %></span>
 			<% } %>
 			<div>Don't have an account? <a href="/users/signup">Sign up.</a></div>
 		</div>

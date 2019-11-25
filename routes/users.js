@@ -4,18 +4,16 @@ const { auth, db } = require('../server');
 const { isValidEmail, determineError } = require('../utils/utils');
 const { setAuthObserver, usernameAlreadyExists } = require('../utils/firebase');
 
-setAuthObserver(auth, (user) => {
-	// TODO: store user in session so the currUser doesn't have to be passed in with every render
-	if (user) { console.log('signed in'); }
-	else { console.log('signed out'); }
-}, (err) => console.error(`${err.code}: ${err.message}`));
+// setAuthObserver(auth, (user) => {
+// 	// TODO: store user in session so the currUser doesn't have to be passed in with every render
+// 	if (user) { console.log('signed in'); }
+// 	else { console.log('signed out'); }
+// }, (err) => console.error(`${err.code}: ${err.message}`));
 
 // Sign up
 router.route('/signup')
 	// Display sign up page
 	.get((req, res) => {
-		// If currently logged in, redirect to quotes
-		if (auth.currentUser) { return res.redirect('/quotes'); }
 		return res.status(200).render(path.join('users', 'signup'));
 	})
 	// Create account
@@ -67,8 +65,6 @@ router.route('/signup')
 router.route('/signin')
 	// Display sign in page
 	.get((req, res) => {
-		// If currently logged in, redirect to quotes page
-		if (auth.currentUser) { return res.redirect('/quotes'); }
 		return res.status(200).render(path.join('users', 'signin'));
 	})
 	// Sign in to account

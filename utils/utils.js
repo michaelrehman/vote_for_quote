@@ -34,13 +34,14 @@ module.exports = {
 	generateTimeStamp: () => {
 		return require('moment')().unix();	// time in seconds
 	},
-	generateQuoteObjects(idQuotesMap, author=undefined) {
+	generateQuoteObjects(idQuotesMap, author, doSort) {
 		const { Quote } = require('./models');
 		const quoteObjects = [];
 		for (const qid in idQuotesMap) {
 			const { body, timestamp, votes } = idQuotesMap[qid];
 			quoteObjects.push(new Quote(qid, author, body, timestamp, votes));
 		}
+		if (doSort) { quoteObjects.sort(require('./models').Quote.sortDatesDescending); }
 		return quoteObjects;
 	}
 };

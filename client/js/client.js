@@ -13,28 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
 // Disable submit button if all inputs are empty
 const form = document.querySelector('form');
 if (form) {
-	form.addEventListener('keyup', function (event) {
-		let isButtonEnabled = true;
-		const subBtn = form.querySelector('button[type="submit"]');
-		for (const input of this.elements) {
-			if (input.tagName === 'BUTTON') {
-				continue;
-			} else if (!input.value) {
-				isButtonEnabled = false;
-			}
-		}
-		if (isButtonEnabled) {
+	const subBtn = form.querySelector('button[type="submit"]');
+	const enableSubBtn = (doEnable) => {
+		if (doEnable) {
 			subBtn.removeAttribute('disabled');
 			subBtn.classList.remove('disabled');
 		} else {
 			subBtn.setAttribute('disabled', '');
 			subBtn.classList.add('disabled');
 		}
+	};
+	// Handle enabling and disabling the submit button
+	form.addEventListener('keyup', function() {
+		let isButtonEnabled = true;
+		for (const input of this.elements) {
+			if (input.tagName === 'BUTTON') { continue; }
+			else if (!input.value) { isButtonEnabled = false; }
+		}
+		enableSubBtn(isButtonEnabled);
 	});
+	// Handle the quote submission
 	if (location.pathname === '/quotes') {
 		form.addEventListener('submit', async (event) => {
 			event.preventDefault();
-			const quote = form['i_quote'].value.trim();
+			let quote = form['i_quote'].value.trim();
 			if (quote) {
 				const resp = await fetch('/quotes', {
 					method: 'POST',
@@ -45,12 +47,14 @@ if (form) {
 					body: JSON.stringify({ quote }),
 					redirect: 'follow'
 				});
-				// Because fetch does follow the redirect
-				// but doesn't change the URL.
+				// Because fetch does follow the
+				// redirect but doesn't change the URL.
 				window.location = resp.url;
 			} else {
 				document.querySelector('a[href="#submitQuote"]').click();
 				M.toast({ html: 'Cannot submit empty quotes.' });
+				form['i_quote'].value = '';
+				enableSubBtn(false);
 			}
 		});
 	}
@@ -68,10 +72,18 @@ if (usernameInput) {
 
 // Close alerts
 document.querySelectorAll('.alert button').forEach((closeBtn) => {
-	closeBtn.addEventListener('click', function () {
+	closeBtn.addEventListener('click', function() {
 		this.parentNode.classList.add('fade-out');
 		setTimeout(() => {
 			this.parentNode.remove();
 		}, 500);
 	});
 });
+
+class Person {
+	constructor() {
+		this.value = 'lame'
+	}
+}
+
+const obj = new Person();

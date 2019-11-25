@@ -1,9 +1,6 @@
 # These are the static files compiled from /client
 /dist
 
-# .env
-*.env
-
 # Logs
 logs
 *.log
@@ -69,7 +66,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+*.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)

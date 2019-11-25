@@ -27,6 +27,7 @@ module.exports = {
 // Initialize app and set template engine
 const app = express();
 app.set('view engine', 'ejs');
+app.set('views', './views');
 app.use(layout);
 
 // Allow access to request.body for html encoded bodies (forms) and json (apis like fetch)
@@ -42,11 +43,29 @@ if (process.env.NODE_ENV !== 'production') {
 	console.log('using static assets from /dist');
 }
 
+// Check if the user is logged in and prevent access to certain pages
+app.use('/', (req, res, next) => {
+	res.locals.currUser = auth.currentUser;
+	const url = req.url.toLowerCase();
+	if (res.locals.currUser === null) {
+		// Prohibit quotes and profiles if not signed in.
+		if (/\/quotes\/?$/.test(url) || /\/users\/profiles(\/?||\/[^\/]*)\/?$/.test(url)) {
+			return res.redirect('/users/signin');
+		}
+	} else {
+		// Prohibit sign in and sign up if signed in.
+		if (/\/users\/signin\/?$/.test(url) || /\/users\/signup\/?$/.test(url)) {
+			return res.redirect('/quotes');
+		}
+	}
+	next();
+});
+
 // Routes
 app.use('/', require('./routes/quotes'));	// homepage, displaying quotes
 app.use('/users', require('./routes/users'));	// creating and authenticating users
-app.use('/users/profile', require('./routes/profile'));	// updating, deleting, displaying user details
-app.get('*', (req, res) => res.status(404).render('404', { currUser: auth.currentUser }));
+app.use('/users/profiles', require('./routes/profile'));	// updating, deleting, displaying user details
+app.get('*', (req, res) => res.status(404).render('404'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, console.log(`Listening on port ${PORT}.`));
