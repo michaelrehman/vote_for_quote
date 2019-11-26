@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const path = require('path');
-const { auth, db } = require('../server');
+const { auth, usersColl, usernamesDoc } = require('../server');
 const { isValidEmail, determineError } = require('../utils/utils');
 const { setAuthObserver, usernameAlreadyExists } = require('../utils/firebase');
 
@@ -20,7 +20,7 @@ router.route('/signup')
 		let { username, email, password } = req.body;
 		// Validate inputs (no spaces)
 		const errors = { username: [], email: '', password: [] };
-		// username
+		// username // TODO: character limit
 		if (!username) { errors.username.push('Please input a username.'); }
 		else if (username.includes(' ')) { errors.username.push('Username cannot contain spaces.'); }
 		// email
@@ -36,7 +36,7 @@ router.route('/signup')
 		}
 		try {
 			// TODO: add security rule for unique usernames and remove this (https://stackoverflow.com/questions/35243492)
-			if (await usernameAlreadyExists(username, db)) {
+			if (await usernameAlreadyExists(username)) {
 				throw {
 					code: 'auth/username-already-in-use',
 					message: 'This username is already taken.'
@@ -46,8 +46,8 @@ router.route('/signup')
 			await auth.createUserWithEmailAndPassword(email, password);
 			await auth.currentUser.updateProfile({ displayName: username });
 			// Firestore
-			await db.collection('users').doc(auth.currentUser.uid).set({ email, username });
-			await db.collection('usernames').doc('usernames').update({
+			await usersColl.doc(auth.currentUser.uid).set({ email, username });
+			await usernamesDoc.update({
 				[username]: auth.currentUser.uid
 			});
 		} catch (err) {
@@ -57,7 +57,7 @@ router.route('/signup')
 				errorMsg, username, email
 			});
 		}
-		return res.redirect('/quotes');
+		return res.status(201).redirect('/quotes');
 	});
 
 // Sign in
@@ -88,7 +88,7 @@ router.route('/signin')
 				errorMsg, email
 			});
 		}
-		return res.redirect('/quotes');
+		return res.status(200).redirect('/quotes');
 	});
 
 router.get('/signout', (req, res) => {

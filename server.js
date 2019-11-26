@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const bodyParser = require('body-parser');
 const layout = require('express-ejs-layouts');
 const path = require('path');
@@ -18,10 +19,12 @@ firebase.initializeApp({
 	measurementId: process.env.MEAUSUREMENT_ID
 });
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 module.exports = {
-	auth,
-	db: firebase.firestore()
+	auth, db, fv: firebase.firestore.FieldValue,
+	usersColl: db.collection('users'),
+	usernamesDoc: db.collection('usernames').doc('usernames')
 };
 
 // Initialize app and set template engine
@@ -29,6 +32,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(layout);
+
+// gzip compression
+app.use(compression());
 
 // Allow access to request.body for html encoded bodies (forms) and json (apis like fetch)
 app.use(bodyParser.urlencoded(JSON.parse('{"extended":"true"}')));
@@ -49,8 +55,9 @@ app.use('/', (req, res, next) => {
 	const url = req.url.toLowerCase();
 	if (res.locals.currUser === null) {
 		// Prohibit quotes and profiles if not signed in.
-		if (/\/quotes\/?$/.test(url) || /\/users\/profiles(\/?||\/[^\/]*)\/?$/.test(url)) {
-			return res.redirect('/users/signin');
+		if (/\/quotes(\/?||\/[^\/]*)\/?$/.test(url)
+				|| /\/users\/profiles(\/?||\/[^\/]*)\/?$/.test(url)) {
+			return res.redirect(401, '/users/signin');
 		}
 	} else {
 		// Prohibit sign in and sign up if signed in.

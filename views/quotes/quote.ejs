@@ -5,12 +5,12 @@
 		<div class="secondary-content">
 			<!-- TODO: button logic (this is gonna hurt) -->
 			<% if (userIsAuthor) { %>
-				<button class="btn-flat waves-effect waves-light blue" type="button">
+				<button class="editBtn btn-flat waves-effect waves-light blue" type="button">
 					<i class="small material-icons white-text">edit</i>
 				</button>
 				<strong class="votes black-text center-align"><%= quote.votes %></strong>
-				<button class="btn-flat waves-effect waves-light red" type="button">
-					<i class="small material-icons white-text">remove</i>
+				<button class="delBtn btn-flat waves-effect waves-light red" type="button">
+					<i class="small material-icons white-text">close</i>
 				</button>
 			<% } else { %>
 				<button class="btn-flat waves-effect" type="button">
@@ -24,7 +24,7 @@
 		</div>
 	</div>
 	<div class="details">
-		<a class="author" href="/users/profile/<%= quote.author %>"><%= quote.author %></a>
+		<a class="author" href="/users/profiles/<%= quote.author %>"><%= quote.author %></a>
 		<span class="date"><%= quote.date %></span>
 	</div>
 </li>

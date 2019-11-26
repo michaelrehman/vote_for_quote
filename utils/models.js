@@ -1,10 +1,10 @@
 // Data model for quotes
-// B/c firebase does not support custom objects in Node,
+// B/c firebase does not support custom objects instantiated with new in Node,
 // this will only be used when pulling quote data, not uploading.
 module.exports = {
 	Quote: class {
-		constructor(id, author, body, timestamp, votes){
-			this.id = id;
+		constructor(qid, author, body, timestamp, votes){
+			this.qid = qid;
 			this.author = author;
 			this.body = body;
 			this.date = require('./utils').parseTimestamp(timestamp);

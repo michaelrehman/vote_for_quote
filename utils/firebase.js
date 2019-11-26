@@ -7,10 +7,10 @@ module.exports = {
 		return docToWatch.onSnapshot(callback, errorCallback)
 	},
 	// TODO: remove this and ensure unique usernames with a database rule
-	usernameAlreadyExists: async (username, db) => {
+	usernameAlreadyExists: async (username) => {
 		try {
 			// All usernames stored in a single document
-			const usernamesDocSnap = await db.collection('usernames').doc('usernames').get();
+			const usernamesDocSnap = await require('../server').usernamesDoc.get();
 			if (usernamesDocSnap.exists) {
 				const usernames = usernamesDocSnap.data();
 				return !!usernames[username];

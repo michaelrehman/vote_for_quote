@@ -23,7 +23,7 @@ module.exports = {
 			errorMsg = 'Too many unsuccessful attempts. Try again shortly.';
 		} else {
 			statusCode = 500;
-			errorMsg = 'Something went wrong.';	// default
+			errorMsg = err.message;	// default
 		}
 		return { statusCode, errorMsg };
 	},

@@ -54,6 +54,7 @@ strong {
 		align-items: inherit;
 		.body {
 			max-width: 90%;
+			word-wrap: break-word;
 		}
 		.secondary-content {
 			display: flex;

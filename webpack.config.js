@@ -4,6 +4,7 @@ module.exports = {
 	mode: 'production',
 	entry: {
 		client: './client/js/client.js',
+		quotes: './client/js/quotes.js',
 		css: './client/scss/main.scss' // this generates an empty js file // TODO: get rid of it
 	},
 	output: {

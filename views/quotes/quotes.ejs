@@ -11,7 +11,7 @@
 		<h5>Create New Quote</h5>
 		<div class="row">
 			<span class="input-field col s12 m12">
-				<input id="i_quote" class="validate" name="quote" type="text" maxlength="200">
+				<textarea id="i_quote" class="materialize-textarea validate" name="quote" type="text" maxlength="200"></textarea>
 				<label for="i_quote" class="textarea-label">New Quote</label>
 				<span class="helper-text right">200</span>
 			</span>
@@ -23,12 +23,16 @@
 	</div>
 </form>
 
-<% if (typeof quotes !== 'undefined' && quotes.length !== 0) { %>
+<% if (typeof JSON.parse(quotes) !== 'undefined' && JSON.parse(quotes).length !== 0) { %>
+	<script> const quotes = <%- quotes %>; // ejs cannot access things in script namespace </script>
 	<ul class="collection">
-	<% quotes.forEach((quote) => { %>
+	<% JSON.parse(quotes).forEach((quote) => { %>
 		<% include quote %>
 	<% }); %>
 	</ul>
 <% } else { %>
 	<h4>No quotes &#58;&#40; Will you be the first?</h4>
 <% } %>
+
+<script src="/js/quotes.js" defer></script>
+<script src="/js/button_logic.js" defer></script>
