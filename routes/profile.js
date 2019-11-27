@@ -17,7 +17,6 @@ router.get('/:username', async (req, res) => {
 		// if the document doesn't exist, then we have no users
 		if (userUidMap.exists) {
 			uid = userUidMap.data()[username];
-			console.log(uid)
 		} else { return res.render(profilePagePath); }
 		// Get the profile mapped to the uid (if no uid, that username does not exist)
 		if (uid) {

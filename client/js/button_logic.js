@@ -9,8 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				method: 'DELETE',
 				headers: { Accept: 'text/plain' }
 			});
-			if (resp.status == 200) { this.parentNode.parentNode.parentNode.remove(); }
-			else { M.toast({ html: 'Could not delete quote.' }); }
+			if (resp.status == 204) {
+				M.toast({ html: 'Quote successfully deleted.', classes: 'green' });
+				this.parentNode.parentNode.parentNode.remove();
+			}
+			else if (resp.status == 401) { M.toast({ html: 'You are not signed in.', classes: 'blue darken-2' }); }
+			else { M.toast({ html: await resp.text(), classes: 'red accent-4' }); }
 		});
 	});
 });

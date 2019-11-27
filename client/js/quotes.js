@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	form['i_quote'].addEventListener('keydown', (e) => {
 		if (e.key === 'Enter') {
 			e.preventDefault();
-			// TODO: submitting through the enter key now bypasses all frontend checks
+			// TODO: submitting through the enter key now bypasses all frontend checks, fix it
 			if (!subBtn.disabled) { form.submit(); }
 		}
 	});

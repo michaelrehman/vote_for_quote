@@ -1,11 +1,12 @@
 <% if (typeof profile !== 'undefined') { %>
+	<% const profileJSON = JSON.parse(profile); %>
 	<script> const quotes = <%- profile %>.quotes; </script>
-	<h1><%= JSON.parse(profile).username %></h1>
-	<h5>&#40;<%= JSON.parse(profile).email %>&#41;</h5>
-	<% if (JSON.parse(profile).quotes && JSON.parse(profile).quotes.length !== 0) { %>
+	<h1><%= profileJSON.username %></h1>
+	<h5>&#40;<%= profileJSON.email %>&#41;</h5>
+	<% if (profileJSON.quotes && profileJSON.quotes.length !== 0) { %>
 		<h3>quotes</h3>
 		<ul class="collection">
-			<% JSON.parse(profile).quotes.forEach((quote) => { %>
+			<% profileJSON.quotes.forEach((quote) => { %>
 				<% include ../quotes/quote %>
 			<% }); %>
 		</ul>

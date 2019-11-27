@@ -23,10 +23,11 @@
 	</div>
 </form>
 
-<% if (typeof JSON.parse(quotes) !== 'undefined' && JSON.parse(quotes).length !== 0) { %>
-	<script> const quotes = <%- quotes %>; // ejs cannot access things in script namespace </script>
+<% if (typeof quotes !== 'undefined' && quotes.length !== 0) { %>
+	<!-- Because we pass in quotes as a string and say to not escape characters, it gets tokenized as JS code. -->
+	<script> const quotes = <%- currUserQuotes %>; // ejs cannot access things in script namespace </script>
 	<ul class="collection">
-	<% JSON.parse(quotes).forEach((quote) => { %>
+	<% quotes.forEach((quote) => { %>
 		<% include quote %>
 	<% }); %>
 	</ul>

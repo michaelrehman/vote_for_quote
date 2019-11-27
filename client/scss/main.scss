@@ -28,9 +28,6 @@ strong {
 		background-color: #b30000;
 		border-color: #5c0202;
 	}
-	&.fade-out {
-		animation: fade-out 500ms forwards;
-	}
 	button {
 		font-size: 1.75rem;
 		color: inherit;
@@ -78,6 +75,10 @@ strong {
 			content: '— ';
 		}
 	}
+}
+
+.fade-out {
+	animation: fade-out 500ms forwards;
 }
 
 @keyframes fade-out {
