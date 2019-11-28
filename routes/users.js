@@ -17,6 +17,7 @@ router.route('/signup')
 	})
 	// Create account
 	.post(async (req, res) => {
+		res.setHeader('Accept', 'application/x-www-form-urlencoded');
 		let { username, email, password } = req.body;
 		// Validate inputs (no spaces)
 		const errors = { username: [], email: '', password: [] };
@@ -47,9 +48,7 @@ router.route('/signup')
 			await auth.currentUser.updateProfile({ displayName: username });
 			// Firestore
 			await usersColl.doc(auth.currentUser.uid).set({ email, username });
-			await usernamesDoc.update({
-				[username]: auth.currentUser.uid
-			});
+			await usernamesDoc.update({ [username]: auth.currentUser.uid });
 		} catch (err) {
 			const { statusCode, errorMsg } = determineError(err);
 			// Rerender page with registration errors
@@ -68,6 +67,7 @@ router.route('/signin')
 	})
 	// Sign in to account
 	.post(async (req, res) => {
+		res.setHeader('Accept', 'application/x-www-form-urlencoded');
 		let { email, password } = req.body;
 		// Validate inputs (email and password entered)
 		const errors = {};

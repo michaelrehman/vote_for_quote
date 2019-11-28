@@ -61,7 +61,7 @@ app.use('/', (req, res, next) => {
 		}
 	} else {
 		// Prohibit sign in and sign up if signed in.
-		if (/\/users\/signin\/?$/.test(url) || /\/users\/signup\/?$/.test(url)) {
+		if (/\/users\/sign(in||up)\/?$/.test(url)) {
 			return res.redirect('/quotes');
 		}
 	}

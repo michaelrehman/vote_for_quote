@@ -5,19 +5,19 @@
 		<div class="secondary-content">
 			<!-- TODO: button logic (this is gonna hurt) -->
 			<% if (userIsAuthor) { %>
-				<button class="editBtn btn-flat waves-effect waves-light blue" type="button">
+				<button class="edit-btn btn-flat waves-effect waves-light blue" type="button">
 					<i class="small material-icons white-text">edit</i>
 				</button>
 				<strong class="votes black-text center-align"><%= quote.votes %></strong>
-				<button class="delBtn btn-flat waves-effect waves-light red" type="button">
+				<button class="del-btn btn-flat waves-effect waves-light red" type="button">
 					<i class="small material-icons white-text">close</i>
 				</button>
 			<% } else { %>
-				<button class="btn-flat waves-effect" type="button">
+				<button class="upvote-btn btn-flat waves-effect" type="button">
 					<i class="small material-icons">keyboard_arrow_up</i>
 				</button>
 				<strong class="votes black-text center-align"><%= quote.votes %></strong>
-				<button class="btn-flat waves-effect" type="button">
+				<button class="downvote-btn btn-flat waves-effect" type="button">
 					<i class="small material-icons">keyboard_arrow_down</i>
 				</button>
 			<% } %>

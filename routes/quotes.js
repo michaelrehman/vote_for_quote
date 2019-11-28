@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const path = require('path');
-const { auth, fv, usersColl } = require('../server');
+const { auth, fv, usersColl, usernamesDoc } = require('../server');
 const { determineError, generateTimeStamp, generateQuoteObjects } = require('../utils/utils');
 
 // Home page
@@ -33,16 +33,18 @@ router.route('/quotes')
 		// 		 so we can render the page without having to wait for the firestore.
 		// TODO: ignore improperly formatted quotes
 		// TODO: pagination
-		const displayQuotes = [];	// array of quote objects
+		const allQuotes = [];	// array of quote objects
 		allUserSnaps.forEach((userSnap) => {	// loops through all documents
 			const { username, quotes } = userSnap.data();
-			displayQuotes.push(...generateQuoteObjects(quotes, username));
+			allQuotes.push(...generateQuoteObjects(quotes, username));
 		});
-		displayQuotes.sort(require('../utils/models').Quote.sortDatesDescending);
-		const currUserQuotes = displayQuotes.filter((quote) => quote.author === auth.currentUser.displayName);
+		allQuotes.sort(require('../utils/models').Quote.sortDatesDescending);	// for rendering
+		const userQuotes = allQuotes.filter((quote) => quote.author === auth.currentUser.displayName);	// for editing/deleting
+		const nonUserQuotes	= allQuotes.filter((quote) => quote.author !== auth.currentUser.displayName);	// for voting
 		return res.status(200).render(quotesPagePath, {
-			quotes: displayQuotes,
-			currUserQuotes: JSON.stringify(currUserQuotes)
+			allQuotes,
+			userQuotes: JSON.stringify(userQuotes),
+			nonUserQuotes: JSON.stringify(nonUserQuotes)
 		});
 	})
 	// Create quote
@@ -67,18 +69,35 @@ router.route('/quotes')
 
 // Update quote
 router.route('/quotes/:qid')
-	// Votes, quote body
-	.post(async (req, res) => {
-		// TODO: make it so users cannot upvote if they already upvote and same with downvotes
-		// TODO: make it so users cannot vote on their own quotes
-		const { vote } = req.body;
+	// Votes, edit quote body
+	.patch(async (req, res) => {
+		try {
+			// TODO: make it so users cannot upvote if they already upvote and same with downvotes
+			// TODO: make it so users cannot vote on their own quotes
+			res.setHeader('Accept', 'application/json');
+			const { qid } = req.params;
+			const { author, vote } = req.body;
+			// get uid mapped to author
+			const uid = (await usernamesDoc.get()).data()[author];
+			// access the doc mapped to uid
+			await usersColl.doc(uid).update({
+				// update qid.votes
+				[`quotes.${qid}.votes`]: (await usersColl.doc(uid).get()).data().quotes[qid].votes + vote
+			});
+			return res.sendStatus(204);
+		} catch (err) {
+			// TODO: actual error handling
+			// TODO: alert user
+			res.setHeader('Content-Type', 'text/plain');
+			return res.sendStatus(500);
+		}
 	})
 	// Quote
 	.delete(async (req, res) => {
 		// Security rules will prevent users from deleting quotes that aren't theirs
 		// TODO: optimize this (spending two reads just to check if a single quote was deleted)
-		const { qid } = req.params;
 		res.setHeader('Content-Type', 'text/plain');
+		const { qid } = req.params;
 		try {
 			// check if quote exists
 			let quote = (await usersColl.doc(auth.currentUser.uid).get()).data().quotes[qid];

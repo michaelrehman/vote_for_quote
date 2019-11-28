@@ -23,11 +23,14 @@
 	</div>
 </form>
 
-<% if (typeof quotes !== 'undefined' && quotes.length !== 0) { %>
+<% if (typeof allQuotes !== 'undefined' && allQuotes.length !== 0) { %>
 	<!-- Because we pass in quotes as a string and say to not escape characters, it gets tokenized as JS code. -->
-	<script> const quotes = <%- currUserQuotes %>; // ejs cannot access things in script namespace </script>
+	<script>
+		const userQuotes = <%- userQuotes %>;
+		const nonUserQuotes = <%- nonUserQuotes %>;
+	</script>
 	<ul class="collection">
-	<% quotes.forEach((quote) => { %>
+	<% allQuotes.forEach((quote) => { %>
 		<% include quote %>
 	<% }); %>
 	</ul>
@@ -36,4 +39,5 @@
 <% } %>
 
 <script src="/js/quotes.js" defer></script>
-<script src="/js/button_logic.js" defer></script>
+<script src="/js/curr_user_btns.js" defer></script>
+<script src="/js/voting_btns.js" defer></script>
